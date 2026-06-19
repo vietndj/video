@@ -393,7 +393,7 @@ export const DEFAULT_CONTENT: PageContent = {
 
 export async function loadContent(): Promise<PageContent> {
   try {
-    const res = await fetch("/content.json?_=" + Date.now());
+    const res = await fetch("/api/content?_=" + Date.now());
     if (!res.ok) return { ...DEFAULT_CONTENT };
     const data = (await res.json()) as Partial<PageContent>;
     return { ...DEFAULT_CONTENT, ...data };

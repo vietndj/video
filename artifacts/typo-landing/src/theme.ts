@@ -585,7 +585,7 @@ export function deriveTextColors(base: Theme): Theme {
 
 export async function loadTheme(): Promise<Theme> {
   try {
-    const res = await fetch("/theme.json?_=" + Date.now());
+    const res = await fetch("/api/theme?_=" + Date.now());
     if (!res.ok) return deriveTextColors(PRESETS[0]);
     const data = (await res.json()) as Partial<Theme>;
     const preset = data.id ? (PRESETS.find((p) => p.id === data.id) ?? PRESETS[0]) : PRESETS[0];

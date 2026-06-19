@@ -22,6 +22,16 @@ router.post("/save-content", async (req, res) => {
   }
 });
 
+router.get("/content", async (req, res) => {
+  try {
+    const filePath = path.join(PUBLIC_DIR, "content.json");
+    const data = await fs.readFile(filePath, "utf-8");
+    res.json(JSON.parse(data));
+  } catch {
+    res.status(404).json({ error: "Not found" });
+  }
+});
+
 router.post("/save-theme", async (req, res) => {
   try {
     const theme = req.body;
@@ -35,6 +45,16 @@ router.post("/save-theme", async (req, res) => {
   } catch (err) {
     req.log.error({ err }, "save-theme failed");
     res.status(500).json({ error: "Failed to save theme" });
+  }
+});
+
+router.get("/theme", async (req, res) => {
+  try {
+    const filePath = path.join(PUBLIC_DIR, "theme.json");
+    const data = await fs.readFile(filePath, "utf-8");
+    res.json(JSON.parse(data));
+  } catch {
+    res.status(404).json({ error: "Not found" });
   }
 });
 

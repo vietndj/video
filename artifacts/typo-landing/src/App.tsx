@@ -528,20 +528,7 @@ export default function App() {
   return (
     <div style={{ background: t.bg, color: t.textBase ?? "#f0f0f0", fontFamily: t.fontBody, minHeight: "100vh", overflowX: "hidden" }}>
 
-      {/* ── Floating Edit Button ── */}
-      <a href="/editor" style={{
-        position: "fixed", bottom: 24, right: 24, zIndex: 9999,
-        background: t.accent, color: t.accentText,
-        borderRadius: 100, padding: "10px 20px",
-        fontFamily: MONO, fontSize: 11, fontWeight: 800, letterSpacing: "0.1em",
-        textDecoration: "none", boxShadow: `0 4px 24px ${t.accent}55`,
-        display: "flex", alignItems: "center", gap: 7,
-        transition: "transform 0.15s, box-shadow 0.15s",
-      }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1.06)"; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1)"; }}>
-        ✏ CHỈNH SỬA
-      </a>
+
 
       {/* ═══ SECTION 1: HERO ═══ */}
       <section style={{ position: "relative", textAlign: "center", padding: "64px 20px 0", maxWidth: 960, margin: "0 auto" }}>

@@ -8,7 +8,9 @@ const path = window.location.pathname.replace(/\/$/, "");
 
 if (path === "/checkout") {
   import("./Checkout").then(({ default: Checkout }) => {
-    createRoot(document.getElementById("root")!).render(<Checkout />);
+    createRoot(document.getElementById("root")!).render(
+      createElement(ThemeProvider, null, createElement(Checkout))
+    );
   });
 } else if (path === "/admin") {
   import("./Admin").then(({ default: Admin }) => {

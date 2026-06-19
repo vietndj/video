@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTheme } from "./theme";
 
 function useIsMobile(breakpoint = 680) {
   const [mobile, setMobile] = useState(() => window.innerWidth < breakpoint);
@@ -10,10 +11,10 @@ function useIsMobile(breakpoint = 680) {
   return mobile;
 }
 
-const ORANGE = "#FF5A00";
-const GREEN = "#27ae60";
-const BG = "#0d0d0d";
-const CARD = "#111111";
+const ORANGE = "var(--theme-accent)";
+const GREEN = "var(--theme-danger, #27ae60)";
+const BG = "var(--theme-bg)";
+const CARD = "var(--theme-card)";
 
 const BONUSES = [
   { icon: "🔤", title: "Bộ 100+ font chuẩn phối cặp sẵn", value: "599K" },
@@ -307,7 +308,7 @@ function GuaranteeBox() {
   );
 }
 
-export default function Checkout() {
+function CheckoutContent() {
   const [confirmed, setConfirmed] = useState(false);
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -583,6 +584,20 @@ export default function Checkout() {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+export default function Checkout() {
+  const t = useTheme();
+  return (
+    <div style={{
+      "--theme-accent": t.accent,
+      "--theme-danger": t.danger,
+      "--theme-bg": t.bg,
+      "--theme-card": t.card
+    } as React.CSSProperties}>
+      <CheckoutContent />
     </div>
   );
 }

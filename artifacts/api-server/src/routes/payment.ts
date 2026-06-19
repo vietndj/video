@@ -92,7 +92,9 @@ router.get("/payment/check", async (req, res) => {
       return;
     }
 
-    const sinceMs = parseInt(since, 10);
+    // Allow 15 minutes of clock drift in case the user's computer clock is fast
+    const sinceMs = parseInt(since, 10) - 15 * 60 * 1000;
+    
     if (!SEPAY_API_KEY) {
       res.json({ found: false });
       return;
@@ -229,8 +231,8 @@ router.post("/sepay/webhook", async (req, res) => {
       const normalizedContent = content.replace(/[\s\-]/g, '');
       
       // Try to extract phone number from transfer content
-      // Relaxed regex to allow fake numbers during testing (8-15 digits)
-      const phoneMatch = normalizedContent.match(/[0-9]{8,15}/);
+      // Strict regex for Vietnamese phone numbers (10 digits starting with 03, 05, 07, 08, 09)
+      const phoneMatch = normalizedContent.match(/0[35789][0-9]{8}/);
       const extractedPhone = phoneMatch ? phoneMatch[0] : null;
 
       if (extractedPhone && GOOGLE_SCRIPT_URL) {

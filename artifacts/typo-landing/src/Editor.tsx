@@ -1414,13 +1414,15 @@ export default function Editor() {
     setDirty(true);
   }, []);
 
-  // Migrate: add any new block IDs from BLOCK_DEFS that are missing from stored order
+  // Migrate: add any new block IDs from BLOCK_DEFS that are missing from stored order AND not hidden
   const rawMeta: BlocksMeta = content.blocksMeta ?? DEFAULT_META;
   const knownIds = BLOCK_DEFS.map((b) => b.id);
-  const missingIds = knownIds.filter((id) => !rawMeta.order.includes(id) && !id.startsWith("custom-"));
+  // Only add IDs that are neither in order already, nor explicitly hidden
+  const missingIds = knownIds.filter(
+    (id) => !rawMeta.order.includes(id) && !rawMeta.hidden.includes(id) && !id.startsWith("custom-")
+  );
   const meta: BlocksMeta = missingIds.length > 0
     ? { ...rawMeta, order: (() => {
-        // Insert products after midcta if possible, else append
         const o = [...rawMeta.order];
         const midctaIdx = o.indexOf("midcta");
         missingIds.forEach((id) => {
@@ -1431,6 +1433,14 @@ export default function Editor() {
         return o;
       })() }
     : rawMeta;
+
+  // Sync computed meta back into content state if migration changed anything
+  useEffect(() => {
+    if (missingIds.length > 0) {
+      setContent((c) => ({ ...c, blocksMeta: meta }));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onMeta = useCallback((patch: Partial<BlocksMeta>) => {
     setContent((c) => ({ ...c, blocksMeta: { ...(c.blocksMeta ?? DEFAULT_META), ...patch } }));

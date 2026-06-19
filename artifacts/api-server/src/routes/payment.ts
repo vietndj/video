@@ -65,13 +65,25 @@ router.post("/lead/register", async (req, res) => {
       body: JSON.stringify(payload),
     });
 
-    const sheetData = await sheetRes.json() as any;
+    let sheetData: any = {};
+    const contentType = sheetRes.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      sheetData = await sheetRes.json();
+    } else {
+      const text = await sheetRes.text();
+      req.log.warn({ text, status: sheetRes.status }, "Google Script returned non-JSON response");
+      if (sheetRes.ok) {
+        sheetData = { success: true, rowIndex: -1 };
+      } else {
+        throw new Error(`Google Script failed with status ${sheetRes.status}`);
+      }
+    }
+
     req.log.info({ name, phone, sheetData }, "Lead registered to sheet via Google Script");
-    
     res.json({ success: true, rowIndex: sheetData.rowIndex ?? -1 });
-  } catch (err) {
+  } catch (err: any) {
     logger.error(err, "Error registering lead to sheet");
-    res.status(500).json({ error: "Failed to register lead" });
+    res.status(500).json({ error: "Failed to register lead", details: err.message });
   }
 });
 
@@ -149,13 +161,20 @@ router.post("/payment/confirm", async (req, res) => {
       body: JSON.stringify(payload),
     });
 
-    const updateData = await updateRes.json();
-    req.log.info({ phone, txId: transactionId, updateData }, "Payment confirmed — sheet updated via Google Script");
+    let updateData: any = {};
+    const contentType = updateRes.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      updateData = await updateRes.json();
+    } else {
+      const text = await updateRes.text();
+      req.log.warn({ text, status: updateRes.status }, "Google Script payment confirm returned non-JSON response");
+    }
 
+    req.log.info({ phone, txId: transactionId, updateData }, "Payment confirmed — sheet updated via Google Script");
     res.json({ success: true });
-  } catch (err) {
+  } catch (err: any) {
     logger.error(err, "Error confirming payment to sheet");
-    res.status(500).json({ error: "Failed to confirm payment" });
+    res.status(500).json({ error: "Failed to confirm payment", details: err.message });
   }
 });
 

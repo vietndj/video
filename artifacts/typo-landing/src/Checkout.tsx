@@ -315,8 +315,13 @@ function CheckoutContent() {
   const [showModal, setShowModal] = useState(false);
   const isMobile = useIsMobile();
 
-  const BANK: BankInfo = { name: "TPBank", account: "00008834042", holder: "NGUYEN DUC VIET", amount: "249.000", content: "TYPO [HO TEN]" };
-  const QR_URL = `https://img.vietqr.io/image/TPB-${BANK.account}-compact2.png?amount=249000&addInfo=TYPO&accountName=${encodeURIComponent(BANK.holder)}`;
+  const rawCustomer = localStorage.getItem("typo_customer");
+  const customer = rawCustomer ? JSON.parse(rawCustomer) as { phone?: string } : {};
+  const phone = customer.phone || "[SĐT CỦA BẠN]";
+  const transferContent = `TYPO ${phone}`;
+
+  const BANK: BankInfo = { name: "TPBank", account: "00008834042", holder: "NGUYEN DUC VIET", amount: "249.000", content: transferContent };
+  const QR_URL = `https://img.vietqr.io/image/TPB-${BANK.account}-compact2.png?amount=249000&addInfo=${encodeURIComponent(transferContent)}&accountName=${encodeURIComponent(BANK.holder)}`;
 
   // Polling: detect payment automatically via SePay
   useEffect(() => {

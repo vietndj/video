@@ -1,17 +1,11 @@
 import { Router } from "express";
-import { ReplitConnectors } from "@replit/connectors-sdk";
 import { logger } from "../lib/logger";
 
 const router: Router = Router();
 
 const SEPAY_API_KEY = process.env.SEPAY_API_KEY ?? "";
-const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID ?? "";
+const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL ?? "";
 const COURSE_AMOUNT = parseInt(process.env.COURSE_AMOUNT ?? "249000", 10);
-
-// Sheet columns: A=Timestamp B=Họ tên C=SĐT D=Email E=Link đăng ký F=Đã thanh toán
-const SHEET_NAME = "Trang tính1";
-const SHEET_RANGE = `${SHEET_NAME}!A:F`;
-const STATUS_COL = "F"; // "Đã thanh toán" column
 
 interface SePayTransaction {
   id: string;
@@ -27,12 +21,6 @@ interface SePayTransaction {
 interface SePayResponse {
   status: number;
   transactions?: SePayTransaction[];
-}
-
-// Extract row number from Google Sheets range string like "Sheet1!A5:F5"
-function parseRowFromRange(range: string): number | null {
-  const match = range.match(/:?[A-Z]+(\d+)$/);
-  return match ? parseInt(match[1], 10) : null;
 }
 
 function viTimestamp() {
@@ -51,9 +39,6 @@ router.get("/payment/bank-info", (_req, res) => {
 });
 
 // ─── POST /api/lead/register ──────────────────────────────────────────────────
-// Called when customer submits registration form.
-// Appends a row: [timestamp, name, phone, email, url, "chưa thanh toán"]
-// Returns: { rowIndex } so the client can store it and later update the status.
 router.post("/lead/register", async (req, res) => {
   try {
     const { name = "", phone = "", email = "", url = "" } = req.body as {
@@ -63,28 +48,27 @@ router.post("/lead/register", async (req, res) => {
       url?: string;
     };
 
-    const connectors = new ReplitConnectors();
-    const appendUrl = `/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${encodeURIComponent(SHEET_RANGE)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+    if (!GOOGLE_SCRIPT_URL) {
+      req.log.warn("GOOGLE_SCRIPT_URL is not set. Cannot save to Google Sheets.");
+      res.json({ success: true, rowIndex: -1 });
+      return;
+    }
 
-    const sheetRes = await connectors.proxy("google-sheet", appendUrl, {
+    const payload = {
+      action: "append",
+      values: [viTimestamp(), name, phone, email, url, "chưa thanh toán"]
+    };
+
+    const sheetRes = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        values: [[viTimestamp(), name, phone, email, url, "chưa thanh toán"]],
-      }),
+      body: JSON.stringify(payload),
     });
 
-    const sheetData = await sheetRes.json() as { updates?: { updatedRange?: string }; updatedRange?: string };
-    req.log.info({ sheetData }, "Sheet append raw response");
-
-    const updatedRange =
-      sheetData.updates?.updatedRange ??
-      sheetData.updatedRange ??
-      "";
-    const rowIndex = parseRowFromRange(updatedRange);
-
-    req.log.info({ name, phone, rowIndex, updatedRange }, "Lead registered to sheet");
-    res.json({ success: true, rowIndex });
+    const sheetData = await sheetRes.json() as any;
+    req.log.info({ name, phone, sheetData }, "Lead registered to sheet via Google Script");
+    
+    res.json({ success: true, rowIndex: sheetData.rowIndex ?? -1 });
   } catch (err) {
     logger.error(err, "Error registering lead to sheet");
     res.status(500).json({ error: "Failed to register lead" });
@@ -92,11 +76,15 @@ router.post("/lead/register", async (req, res) => {
 });
 
 // ─── GET /api/payment/check ───────────────────────────────────────────────────
-// Polls SePay for a matching transaction since the given timestamp.
 router.get("/payment/check", async (req, res) => {
   try {
     const sinceParam = req.query.since as string | undefined;
     const sinceMs = sinceParam ? parseInt(sinceParam, 10) : Date.now() - 30 * 60 * 1000;
+
+    if (!SEPAY_API_KEY) {
+      res.json({ found: false, error: "SEPAY_API_KEY not configured" });
+      return;
+    }
 
     const sepayRes = await fetch("https://my.sepay.vn/userapi/transactions/list?limit=20", {
       headers: {
@@ -132,9 +120,6 @@ router.get("/payment/check", async (req, res) => {
 });
 
 // ─── POST /api/payment/confirm ────────────────────────────────────────────────
-// Called when payment is confirmed.
-// If rowIndex is provided: updates status cell in-place → "done".
-// Otherwise: appends a new row (fallback).
 router.post("/payment/confirm", async (req, res) => {
   try {
     const { name = "", phone = "", email = "", url = "", transactionId = "", rowIndex } = req.body as {
@@ -146,41 +131,78 @@ router.post("/payment/confirm", async (req, res) => {
       rowIndex?: number;
     };
 
-    const connectors = new ReplitConnectors();
-
-    if (rowIndex && rowIndex > 0) {
-      // Update just the status cell (column F) of the existing registration row
-      const cellRange = `${SHEET_NAME}!${STATUS_COL}${rowIndex}`;
-      const updateUrl = `/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${encodeURIComponent(cellRange)}?valueInputOption=USER_ENTERED`;
-
-      const updateRes = await connectors.proxy("google-sheet", updateUrl, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ values: [["done"]] }),
-      });
-
-      const updateData = await updateRes.json();
-      req.log.info({ rowIndex, txId: transactionId, updateData }, "Payment confirmed — row updated");
-    } else {
-      // Fallback: append a new row if no rowIndex stored
-      const appendUrl = `/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${encodeURIComponent(SHEET_RANGE)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-
-      const sheetRes = await connectors.proxy("google-sheet", appendUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          values: [[viTimestamp(), name, phone, email, url, "done"]],
-        }),
-      });
-
-      const sheetData = await sheetRes.json();
-      req.log.info({ txId: transactionId, sheetData }, "Payment confirmed — row appended (no rowIndex)");
+    if (!GOOGLE_SCRIPT_URL) {
+      res.json({ success: true });
+      return;
     }
+
+    // Notice we use "update_status" by phone number now!
+    const payload = {
+      action: "update_status",
+      phone: phone,
+      status: "Đã thanh toán"
+    };
+
+    const updateRes = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const updateData = await updateRes.json();
+    req.log.info({ phone, txId: transactionId, updateData }, "Payment confirmed — sheet updated via Google Script");
 
     res.json({ success: true });
   } catch (err) {
     logger.error(err, "Error confirming payment to sheet");
     res.status(500).json({ error: "Failed to confirm payment" });
+  }
+});
+
+// ─── POST /api/sepay/webhook ──────────────────────────────────────────────────
+// Receives webhooks directly from SePay when a transaction occurs
+router.post("/sepay/webhook", async (req, res) => {
+  try {
+    const data = req.body;
+    req.log.info({ webhookData: data }, "Received SePay Webhook");
+
+    // data typically contains: id, gateway, transactionDate, accountNumber, subAccount, amountIn, amountOut, transferType, content...
+    const amountIn = parseFloat(data.amountIn || data.amount_in || "0");
+    const content = String(data.content || data.transaction_content || "").toUpperCase();
+    
+    // Only process if it's an incoming payment of the exact amount
+    if (amountIn === COURSE_AMOUNT) {
+      // Try to extract phone number from transfer content (e.g., "TYPO 0912345678")
+      // This regex looks for 10-11 digit phone numbers in the content
+      const phoneMatch = content.match(/0[0-9]{9,10}/);
+      const extractedPhone = phoneMatch ? phoneMatch[0] : null;
+
+      if (extractedPhone && GOOGLE_SCRIPT_URL) {
+        req.log.info(`Extracted phone ${extractedPhone} from SePay webhook content. Updating Google Sheet...`);
+        
+        const payload = {
+          action: "update_status",
+          phone: extractedPhone,
+          status: "Đã thanh toán"
+        };
+
+        const updateRes = await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const updateData = await updateRes.json();
+        req.log.info({ phone: extractedPhone, updateData }, "SePay Webhook updated Google Sheet successfully");
+      } else {
+        req.log.info("Could not extract phone number from SePay webhook content, or GOOGLE_SCRIPT_URL not set.");
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    logger.error(err, "Error processing SePay webhook");
+    res.status(500).json({ error: "Failed to process webhook" });
   }
 });
 

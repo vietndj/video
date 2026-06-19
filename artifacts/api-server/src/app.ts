@@ -36,7 +36,7 @@ app.use("/api", router);
 // Serve static files in production
 const distPath = path.resolve(__dirname, "../../typo-landing/dist");
 app.use(express.static(distPath));
-app.get("*", (req, res) => {
+app.get("*splat", (req, res) => {
   res.sendFile(path.resolve(distPath, "index.html"));
 });
 

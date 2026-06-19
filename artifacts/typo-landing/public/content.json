@@ -56,25 +56,29 @@
       "n": "01",
       "title": "Đọc vị \"Giải phẫu chữ\" (Anatomy)",
       "desc": "Hiểu rõ tại sao logo của Built Robotics lại cắt gọt nét chữ cứng cáp, hay vì sao nét bo tròn lại tạo sự thân thiện. Có kiến thức này, bạn luôn có \"lý luận thép\" để giải thích với khách hàng.",
-      "warn": "Không có kiến thức này, mọi quyết định thiết kế của bạn chỉ là phỏng đoán cảm tính."
+      "warn": "Không có kiến thức này, mọi quyết định thiết kế của bạn chỉ là phỏng đoán cảm tính.",
+      "gif": ""
     },
     {
       "n": "02",
       "title": "Chọn Font theo Bản đồ Ngành hàng",
       "desc": "Nắm vững đặc tính của 4 dòng font huyết mạch (Serif, Sans, Mono, Script). Biết chính xác vì sao ngành Tech dùng Monospace, ngành xa xỉ dùng font mảnh và tinh tế.",
-      "warn": "Sai lầm chết người: mang font ngành F&B áp dụng cho dự án Công nghệ cao."
+      "warn": "Sai lầm chết người: mang font ngành F&B áp dụng cho dự án Công nghệ cao.",
+      "gif": ""
     },
     {
       "n": "03",
       "title": "Tối ưu hiển thị số (Digital UI/UX)",
       "desc": "Tính toán độ mở (Aperture) và chiều cao (x-height) để chữ luôn hiển thị sắc nét, không bị ngộp thở trên màn hình Mobile hay tablet nhỏ.",
-      "warn": "Thiếu kỹ năng này, ấn phẩm của bạn sẽ dính nét và ngộp thở trên màn hình nhỏ."
+      "warn": "Thiếu kỹ năng này, ấn phẩm của bạn sẽ dính nét và ngộp thở trên màn hình nhỏ.",
+      "gif": ""
     },
     {
       "n": "04",
       "title": "Tùy biến sáng tạo (Customization)",
       "desc": "Thoát khỏi việc dùng font miễn phí đại trà. Tự tay điều chỉnh các điểm neo (Anchor points) để phác thảo ra những logo độc bản, đắt tiền và có bản sắc riêng.",
-      "warn": "Phụ thuộc font miễn phí, Portfolio của bạn mãi kẹt ở phân khúc bình dân."
+      "warn": "Phụ thuộc font miễn phí, Portfolio của bạn mãi kẹt ở phân khúc bình dân.",
+      "gif": ""
     }
   ],
   "roadmapLabel": "Lộ trình kiến thức bên trong",
@@ -91,25 +95,29 @@
       "n": "Chương 1–4",
       "title": "Nền Tảng Cội Nguồn",
       "sub": "Bóc tách 4 dòng Typeface cốt lõi",
-      "desc": "Hiểu rõ sự uy quyền của Serif, tính công năng của Sans-Serif, sự chính xác của Monospace và nét tự nhiên của Script."
+      "desc": "Hiểu rõ sự uy quyền của Serif, tính công năng của Sans-Serif, sự chính xác của Monospace và nét tự nhiên của Script.",
+      "gif": "/uploads/1781866117735_book_1_serif_.gif"
     },
     {
       "n": "Chương 5",
       "title": "Giải Mã Brief & Năng Lượng Chữ",
       "sub": "Phân tích tính cách thương hiệu",
-      "desc": "Biết cách lên khung logic thiết kế ngay khi vừa đọc yêu cầu của khách hàng dựa trên lịch sử font chữ."
+      "desc": "Biết cách lên khung logic thiết kế ngay khi vừa đọc yêu cầu của khách hàng dựa trên lịch sử font chữ.",
+      "gif": "/uploads/1781866121914_07_logic_1.gif"
     },
     {
       "n": "Chương 6–7",
       "title": "Bản Đồ Quyết Định",
       "sub": "Quy trình lọc font nhanh chóng",
-      "desc": "Rút ngắn thời gian chọn font từ 3 tiếng xuống còn 5 phút nhờ nắm vững quy tắc phối cặp (Font Pairing) cho 10 ngành hàng."
+      "desc": "Rút ngắn thời gian chọn font từ 3 tiếng xuống còn 5 phút nhờ nắm vững quy tắc phối cặp (Font Pairing) cho 10 ngành hàng.",
+      "gif": "/uploads/1781866129697_07_logic_2.gif"
     },
     {
       "n": "Chương 8",
       "title": "Can Thiệp Vi Mô",
       "sub": "Anatomy, Kerning & Ink-traps",
-      "desc": "Đi sâu vào cấu tạo giải phẫu Anatomy. Căn chỉnh Kerning, xử lý bẫy mực (Ink-traps) và tự tay gọt nét để ấn phẩm đạt chuẩn chuyên nghiệp cao nhất."
+      "desc": "Đi sâu vào cấu tạo giải phẫu Anatomy. Căn chỉnh Kerning, xử lý bẫy mực (Ink-traps) và tự tay gọt nét để ấn phẩm đạt chuẩn chuyên nghiệp cao nhất.",
+      "gif": "/uploads/1781866134378_08_.gif"
     }
   ],
   "bonusesLabel": "Quà tặng đi kèm không thể bỏ qua",
@@ -278,7 +286,8 @@
     ],
     "hidden": [
       "cycle",
-      "discovery"
+      "discovery",
+      "solution"
     ],
     "media": {},
     "custom": {}

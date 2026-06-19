@@ -199,6 +199,16 @@ export default defineConfig({
     fs: {
       strict: true,
     },
+    proxy: {
+      "/api/lead/register": {
+        target: "https://typo-landing-api.onrender.com",
+        changeOrigin: true,
+      },
+      "/api/payment": {
+        target: "https://typo-landing-api.onrender.com",
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     port,

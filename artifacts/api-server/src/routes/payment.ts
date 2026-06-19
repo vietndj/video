@@ -27,6 +27,10 @@ function viTimestamp() {
   return new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
 }
 
+// ─── In-memory customer cache (phone → { name, email }) ───────────────────────
+// Survives within the same server process; sufficient for the registration→payment flow
+const customerCache = new Map<string, { name: string; email: string }>();
+
 // ─── GET /api/payment/bank-info ───────────────────────────────────────────────
 router.get("/payment/bank-info", (_req, res) => {
   res.json({
@@ -47,6 +51,13 @@ router.post("/lead/register", async (req, res) => {
       email?: string;
       url?: string;
     };
+
+    // Cache customer info keyed by normalized phone so webhook can look it up later
+    if (phone) {
+      const normalizedPhone = phone.replace(/[\s\-]/g, '');
+      customerCache.set(normalizedPhone, { name, email });
+      req.log.info({ phone: normalizedPhone }, "Customer info cached");
+    }
 
     if (!GOOGLE_SCRIPT_URL) {
       req.log.warn("GOOGLE_SCRIPT_URL is not set. Cannot save to Google Sheets.");
@@ -255,18 +266,26 @@ router.post("/sepay/webhook", async (req, res) => {
 
         // Trigger Make.com webhook for Skool invite & Email
         const MAKE_WEBHOOK_URL = process.env.MAKE_WEBHOOK_URL || "https://hook.us2.make.com/hvzbs56d8acpwn53ywcoiwkgw633v1pr";
-        if (updateData.success && updateData.email) {
-          req.log.info({ email: updateData.email }, "Triggering Make.com webhook from SePay Webhook...");
+        
+        // Look up customer info: prefer Google Sheet response, fall back to in-memory cache
+        const cached = customerCache.get(extractedPhone);
+        const emailToSend = updateData.email || cached?.email || "";
+        const nameToSend = updateData.name || cached?.name || "Học viên";
+
+        if (emailToSend) {
+          req.log.info({ email: emailToSend }, "Triggering Make.com webhook from SePay Webhook...");
           fetch(MAKE_WEBHOOK_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              name: updateData.name || "Customer",
-              email: updateData.email,
+              name: nameToSend,
+              email: emailToSend,
               phone: extractedPhone,
               course: "Typography Masterclass"
             })
           }).catch(err => req.log.error(err, "Failed to call Make webhook from SePay webhook"));
+        } else {
+          req.log.warn({ extractedPhone }, "No email found in cache or Google Sheet — Make webhook NOT triggered");
         }
       } else {
         req.log.info("Could not extract phone number from SePay webhook content, or GOOGLE_SCRIPT_URL not set.");

@@ -56,7 +56,7 @@ router.post("/lead/register", async (req, res) => {
 
     const payload = {
       action: "append",
-      values: [viTimestamp(), name, phone, email, url, "chưa thanh toán"]
+      values: [viTimestamp(), name, `'${phone}`, email, url, "chưa thanh toán"]
     };
 
     const sheetRes = await fetch(GOOGLE_SCRIPT_URL, {

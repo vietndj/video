@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Typography Masterclass"
+version = "1.0.0"
+id = "artifacts/typo-landing"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19916
+
+[services.development]
+run = "pnpm --filter @workspace/typo-landing run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/typo-landing", "run", "build" ]
+publicDir = "artifacts/typo-landing/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19916"
+BASE_PATH = "/"

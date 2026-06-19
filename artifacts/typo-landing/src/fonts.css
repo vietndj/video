@@ -1,0 +1,215 @@
+/* ─── Noe Display ─── */
+@font-face {
+  font-family: 'Noe Display';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-NoeDisplay-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noe Display';
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-NoeDisplay-MediumItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noe Display';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-NoeDisplay-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noe Display';
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-NoeDisplay-BoldItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noe Display';
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-NoeDisplay-Black.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Noe Display';
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-NoeDisplay-BlackItalic.ttf') format('truetype');
+}
+
+/* ─── GT Sectra Display ─── */
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Light.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Light-Italic.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Regular.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Regular-Italic.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Medium.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Medium-Italic.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Bold.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Bold-Italic.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Super.otf') format('opentype');
+}
+@font-face {
+  font-family: 'GT Sectra';
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/GT-Sectra-LCGV-Display-Super-Italic.otf') format('opentype');
+}
+
+/* ─── Aeonik ─── */
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-THIN.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-THINITALIC.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-Aeonik-Air.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-Aeonik-AirItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-LIGHT.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-LIGHTITALIC.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-REGULAR.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-REGULARITALIC.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-MEDIUM.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-MEDIUMITALIC.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-BOLD.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-BOLDITALIC.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-BLACK.TTF') format('truetype');
+}
+@font-face {
+  font-family: 'Aeonik';
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/SVN-AEONIK-BLACKITALIC.TTF') format('truetype');
+}

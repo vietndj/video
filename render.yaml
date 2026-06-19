@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: typo-landing-api
+    env: node
+    buildCommand: pnpm install && pnpm run build
+    startCommand: cd artifacts/api-server && pnpm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SEPAY_API_KEY
+        sync: false
+      - key: GOOGLE_SHEET_ID
+        sync: false

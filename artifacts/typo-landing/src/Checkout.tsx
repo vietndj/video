@@ -27,7 +27,7 @@ const OBJECTIONS = [
   { q: "Tôi chưa chắc mình có thời gian học không?", a: "Bạn không cần học liền. Tài liệu truy cập vĩnh viễn — đọc 15 phút/ngày trong 7 ngày là đủ thấy thay đổi. Không deadline, không áp lực." },
   { q: "Tôi đã xem nhiều tutorial rồi, có gì khác không?", a: "Tutorial cho bạn trick. Masterclass này cho bạn hệ thống. Sự khác biệt là: trick bạn phải nhớ, hệ thống bạn sẽ hiểu và tự suy ra." },
   { q: "249K có thực sự xứng đáng không?", a: "Một buổi freelance tốt hơn nhờ typography đúng hướng có thể thu thêm 500K–2 triệu. Tài liệu này payback ngay từ dự án đầu tiên bạn áp dụng." },
-  { q: "Nếu tôi không hài lòng thì sao?", a: "Hoàn tiền 100% trong 7 ngày, không hỏi lý do. Gửi email về support@fedu.vn — chúng tôi hoàn tiền trong 24 giờ." },
+  { q: "Nếu tôi không hài lòng thì sao?", a: "Hoàn tiền 100% trong 7 ngày, không hỏi lý do. Gửi email về vietndj@gmail.com (hoặc Zalo: 0934.688.632) — chúng tôi hoàn tiền trong 24 giờ." },
   { q: "Tôi mới học design, có phù hợp không?", a: "Có. Module 01 bắt đầu từ nền tảng, không yêu cầu kiến thức trước. Cả người mới lẫn designer 3–5 năm đều thấy giá trị khác nhau từ tài liệu này." },
 ];
 
@@ -35,7 +35,7 @@ const FAQS = [
   { q: "Tôi nhận tài liệu bằng cách nào?", a: "Sau khi xác minh chuyển khoản, chúng tôi gửi link truy cập qua email bạn đã đăng ký trước đó — thường trong 30 phút (giờ hành chính)." },
   { q: "Tôi có thể học trên điện thoại không?", a: "Có. Ebook và video đều tương thích với mọi thiết bị: điện thoại, tablet, laptop." },
   { q: "Quyền truy cập có hết hạn không?", a: "Không. Bạn truy cập vĩnh viễn sau khi mua một lần." },
-  { q: "Tôi chuyển khoản xong nhưng chưa nhận email?", a: "Hãy kiểm tra thư mục Spam/Junk trước. Nếu sau 60 phút vẫn không có, liên hệ support@fedu.vn kèm ảnh chụp màn hình giao dịch." },
+  { q: "Tôi chuyển khoản xong nhưng chưa nhận email?", a: "Hãy kiểm tra thư mục Spam/Junk trước. Nếu sau 60 phút vẫn không có, liên hệ vietndj@gmail.com (hoặc Zalo: 0934.688.632) kèm ảnh chụp màn hình giao dịch." },
   { q: "Nội dung chuyển khoản ghi gì?", a: "Ghi: TYPO [họ tên của bạn]. Ví dụ: TYPO NGUYEN VAN A. Điều này giúp chúng tôi xác minh nhanh hơn." },
   { q: "Thanh toán có an toàn không?", a: "Chuyển khoản trực tiếp qua ngân hàng — không có bên thứ ba, không cần nhập thông tin thẻ. An toàn 100%." },
   { q: "Tôi có thể tải file về máy không?", a: "Có. Ebook có thể tải về dưới dạng PDF. Video xem online, không tải." },
@@ -146,7 +146,7 @@ function PaymentSuccessModal({ onClose }: { onClose: () => void }) {
           ))}
         </div>
         <p style={{ fontSize: 12, color: "#444", marginBottom: 20 }}>
-          Chưa nhận sau 30 phút? <a href="mailto:support@fedu.vn" style={{ color: ORANGE }}>support@fedu.vn</a>
+        Chưa nhận sau 30 phút? <a href="mailto:vietndj@gmail.com" style={{ color: ORANGE }}>vietndj@gmail.com</a> (Zalo: 0934.688.632)
         </p>
         <button onClick={onClose} style={{
           background: ORANGE, color: "#fff", border: "none",
@@ -176,7 +176,7 @@ function ConfirmBanner({ onReset }: { onReset: () => void }) {
           <span key={item} style={{ fontSize: 14, color: "#c0c0c0" }}>{item}</span>
         ))}
       </div>
-      <p style={{ fontSize: 13, color: "#555" }}>Chưa nhận email sau 30 phút? Liên hệ <a href="mailto:support@fedu.vn" style={{ color: ORANGE }}>support@fedu.vn</a></p>
+      <p style={{ fontSize: 13, color: "#555" }}>Chưa nhận email sau 30 phút? Liên hệ <a href="mailto:vietndj@gmail.com" style={{ color: ORANGE }}>vietndj@gmail.com</a> (Zalo: 0934.688.632)</p>
       <button onClick={onReset} style={{ marginTop: 20, background: "transparent", border: "1px solid #2a2a2a", borderRadius: 50, padding: "10px 24px", color: "#555", fontSize: 13, cursor: "pointer" }}>
         Quay lại trang thanh toán
       </button>
@@ -271,7 +271,7 @@ function PaymentPanel({ bank, qrUrl, onConfirm }: { bank: BankInfo; qrUrl: strin
       </button>
       <p style={{ fontSize: 12, color: "#555", textAlign: "center", marginTop: 10, lineHeight: 1.6 }}>
         Tài liệu gửi qua email trong 30 phút sau xác nhận.<br />
-        Chưa nhận? Liên hệ <a href="mailto:support@fedu.vn" style={{ color: ORANGE }}>support@fedu.vn</a>
+        Chưa nhận? Liên hệ <a href="mailto:vietndj@gmail.com" style={{ color: ORANGE }}>vietndj@gmail.com</a> (Zalo: 0934.688.632)
       </p>
 
       <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 18, paddingTop: 14, borderTop: "1px solid #1a1a1a", flexWrap: "wrap" }}>
@@ -301,7 +301,7 @@ function GuaranteeBox() {
     <div style={{ background: "#0a150a", border: "1px solid #27ae6033", borderRadius: 14, padding: "16px 18px" }}>
       <p style={{ fontSize: 14, fontWeight: 700, color: GREEN, marginBottom: 8 }}>💰 Cam kết hoàn tiền 100% — 7 ngày</p>
       <p style={{ fontSize: 13, color: "#666", lineHeight: 1.65, margin: 0 }}>
-        Nếu bạn không hài lòng vì bất kỳ lý do gì trong vòng 7 ngày, chúng tôi hoàn tiền đầy đủ. Không hỏi lý do. Email: <a href="mailto:support@fedu.vn" style={{ color: ORANGE }}>support@fedu.vn</a>
+        Nếu bạn không hài lòng vì bất kỳ lý do gì trong vòng 7 ngày, chúng tôi hoàn tiền đầy đủ. Không hỏi lý do. Liên hệ: <a href="mailto:vietndj@gmail.com" style={{ color: ORANGE }}>vietndj@gmail.com</a> (Zalo: 0934.688.632)
       </p>
     </div>
   );
@@ -579,7 +579,7 @@ export default function Checkout() {
           </div>
           <p style={{ fontSize: 12, color: "#444", lineHeight: 1.8 }}>
             © 2024 Typography Masterclass · fedu.vn · Mọi quyền được bảo lưu.<br />
-            <a href="mailto:support@fedu.vn" style={{ color: "#555" }}>support@fedu.vn</a>
+            <a href="mailto:vietndj@gmail.com" style={{ color: "#555" }}>vietndj@gmail.com</a> | Zalo: 0934.688.632
           </p>
         </div>
       </div>

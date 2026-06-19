@@ -274,14 +274,11 @@
       "bonuses",
       "before-after",
       "cta",
-      "footer",
-      "cycle",
-      "discovery"
+      "footer"
     ],
     "hidden": [
       "cycle",
-      "discovery",
-      "solution"
+      "discovery"
     ],
     "media": {},
     "custom": {}

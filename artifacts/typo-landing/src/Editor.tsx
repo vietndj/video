@@ -1003,17 +1003,32 @@ function BonusesEdit({ c, uc, t }: { c: PageContent; uc: (p: Partial<PageContent
         <ETBlock value={c.bonusesTitle} onChange={(v) => uc({ bonusesTitle: v })} style={{ fontSize: 18, fontWeight: 800 }} />
       </div>
       {c.bonuses.map((b, i) => (
-        <div key={i} style={{ background: t.card, border: `1px solid ${t.line}`, borderRadius: t.cardRadius, padding: "18px 20px", marginBottom: 10, display: "flex", gap: 16, alignItems: "flex-start" }}>
-          <div style={{ fontSize: 26, flexShrink: 0 }}>
-            <ET value={b.icon} onChange={(v) => { const n = [...c.bonuses]; n[i] = { ...n[i], icon: v }; uc({ bonuses: n }); }} />
+        <div key={i} style={{ background: t.card, border: `1px solid ${t.line}`, borderRadius: t.cardRadius, padding: "18px 20px", marginBottom: 10, display: "flex", gap: 16, alignItems: "flex-start", flexDirection: "column" }}>
+          <div style={{ display: "flex", gap: 16, width: "100%", alignItems: "flex-start" }}>
+            <div style={{ fontSize: 26, flexShrink: 0 }}>
+              <ET value={b.icon} onChange={(v) => { const n = [...c.bonuses]; n[i] = { ...n[i], icon: v }; uc({ bonuses: n }); }} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <ETBlock value={b.title} onChange={(v) => { const n = [...c.bonuses]; n[i] = { ...n[i], title: v }; uc({ bonuses: n }); }}
+                style={{ fontWeight: 700, fontSize: 15, marginBottom: 5 }} />
+              <ETBlock value={b.desc} onChange={(v) => { const n = [...c.bonuses]; n[i] = { ...n[i], desc: v }; uc({ bonuses: n }); }}
+                style={{ fontSize: 13, color: "#999", lineHeight: 1.65 }} />
+            </div>
+            <DelBtn onClick={() => uc({ bonuses: c.bonuses.filter((_, j) => j !== i) })} />
           </div>
-          <div style={{ flex: 1 }}>
-            <ETBlock value={b.title} onChange={(v) => { const n = [...c.bonuses]; n[i] = { ...n[i], title: v }; uc({ bonuses: n }); }}
-              style={{ fontWeight: 700, fontSize: 15, marginBottom: 5 }} />
-            <ETBlock value={b.desc} onChange={(v) => { const n = [...c.bonuses]; n[i] = { ...n[i], desc: v }; uc({ bonuses: n }); }}
-              style={{ fontSize: 13, color: "#999", lineHeight: 1.65 }} />
+          <div style={{ width: "100%", borderTop: `1px dashed ${t.line}`, paddingTop: 12 }}>
+            <ImageUploadField
+              value={b.image ?? ""}
+              onChange={(v) => { const n = [...c.bonuses]; n[i] = { ...n[i], image: v }; uc({ bonuses: n }); }}
+              label="ẢNH MINH HỌA QUÀ TẶNG"
+              accent={t.accent}
+            />
+            {b.image && (
+              <div style={{ marginTop: 12, borderRadius: 8, overflow: "hidden", border: `1px solid ${t.line}`, width: "fit-content", maxWidth: "100%" }}>
+                <img src={b.image} style={{ width: "100%", display: "block", maxHeight: 200, objectFit: "contain" }} />
+              </div>
+            )}
           </div>
-          <DelBtn onClick={() => uc({ bonuses: c.bonuses.filter((_, j) => j !== i) })} />
         </div>
       ))}
       <AddBtn onClick={() => uc({ bonuses: [...c.bonuses, { icon: "🎁", title: "Bonus mới", desc: "Mô tả bonus..." }] })} accent={t.accent} />

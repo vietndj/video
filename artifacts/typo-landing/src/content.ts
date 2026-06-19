@@ -22,7 +22,7 @@ export interface BlocksMeta {
 export interface BrandCard { brand: string; q: string; a: string }
 export interface SkillCard { n: string; title: string; desc: string; warn: string; gif?: string }
 export interface Stage { n: string; title: string; sub: string; desc: string; gif?: string }
-export interface BonusItem { icon: string; title: string; desc: string }
+export interface BonusItem { icon: string; title: string; desc: string; image?: string; }
 export interface ProductItem { icon: string; title: string; desc: string }
 export interface ValueLine { label: string; price: string }
 export interface FailItem { fail: string; why: string }

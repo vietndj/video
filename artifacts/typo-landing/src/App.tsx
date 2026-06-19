@@ -940,6 +940,11 @@ export default function App() {
                   </div>
                   <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 8, color: t.textBase ?? "#f0f0f0", lineHeight: 1.35 }}>{b.title}</div>
                   <div style={{ fontSize: 15, color: t.textBody ?? "#b0b0b0", lineHeight: 1.65 }}>{b.desc}</div>
+                  {b.image && (
+                    <div style={{ marginTop: 20, borderRadius: 12, overflow: "hidden", border: `1px solid ${t.line}` }}>
+                      <img src={b.image} alt={b.title} style={{ width: "100%", display: "block" }} />
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

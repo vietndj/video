@@ -112,8 +112,8 @@ router.get("/payment/check", async (req, res) => {
       return;
     }
 
-    // Strip leading zeros for robust comparison
-    const searchPhone = phone.replace(/^0+/, '');
+    // Strip leading zeros and ALL spaces/dashes for robust comparison
+    const searchPhone = phone.replace(/^0+/, '').replace(/[\s\-]/g, '');
 
     const match = data.transactions.find((tx) => {
       const amountIn = parseFloat(tx.amount_in);
@@ -124,7 +124,7 @@ router.get("/payment/check", async (req, res) => {
       const txTime = new Date(txTimeString).getTime();
       
       // Check if the transaction content contains the phone number
-      const content = (tx.transaction_content || "").toLowerCase();
+      const content = (tx.transaction_content || "").toLowerCase().replace(/[\s\-]/g, '');
       const hasPhone = content.includes(searchPhone);
       
       return amountIn === COURSE_AMOUNT && txTime >= sinceMs && hasPhone;
@@ -219,12 +219,18 @@ router.post("/sepay/webhook", async (req, res) => {
     // data typically contains: id, gateway, transactionDate, accountNumber, subAccount, amountIn, amountOut, transferType, content...
     const amountIn = parseFloat(data.amountIn || data.amount_in || "0");
     const content = String(data.content || data.transaction_content || "").toUpperCase();
-    
+    const transactionId = data.id || "";
+
+    req.log.info({ amountIn, content, transactionId }, "Received SePay webhook");
+
     // Only process if it's an incoming payment of the exact amount
     if (amountIn === COURSE_AMOUNT) {
+      // Remove all spaces and dashes from content so the regex matches contiguous digits
+      const normalizedContent = content.replace(/[\s\-]/g, '');
+      
       // Try to extract phone number from transfer content
       // Relaxed regex to allow fake numbers during testing (8-15 digits)
-      const phoneMatch = content.match(/[0-9]{8,15}/);
+      const phoneMatch = normalizedContent.match(/[0-9]{8,15}/);
       const extractedPhone = phoneMatch ? phoneMatch[0] : null;
 
       if (extractedPhone && GOOGLE_SCRIPT_URL) {

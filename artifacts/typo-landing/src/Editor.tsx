@@ -72,7 +72,14 @@ function EdIconVideo({ c }: { c: string }) {
 function ET({ value, onChange, style }: { value: string; onChange: (v: string) => void; style?: React.CSSProperties }) {
   const ref = useRef<HTMLSpanElement>(null);
   const vRef = useRef(value);
-  useEffect(() => { if (ref.current) { ref.current.textContent = value; vRef.current = value; } }, []);
+  
+  useEffect(() => {
+    if (ref.current && ref.current.textContent !== value) {
+      ref.current.textContent = value;
+      vRef.current = value;
+    }
+  }, [value]);
+
   const flush = (el: HTMLElement) => {
     const t = el.textContent ?? "";
     if (t !== vRef.current) { vRef.current = t; onChange(t); }
@@ -89,7 +96,14 @@ function ET({ value, onChange, style }: { value: string; onChange: (v: string) =
 function ETBlock({ value, onChange, style }: { value: string; onChange: (v: string) => void; style?: React.CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
   const vRef = useRef(value);
-  useEffect(() => { if (ref.current) { ref.current.textContent = value; vRef.current = value; } }, []);
+
+  useEffect(() => {
+    if (ref.current && ref.current.textContent !== value) {
+      ref.current.textContent = value;
+      vRef.current = value;
+    }
+  }, [value]);
+
   const flush = (el: HTMLElement) => {
     const t = el.textContent ?? "";
     if (t !== vRef.current) { vRef.current = t; onChange(t); }

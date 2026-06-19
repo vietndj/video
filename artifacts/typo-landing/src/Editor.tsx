@@ -72,13 +72,15 @@ function EdIconVideo({ c }: { c: string }) {
 function ET({ value, onChange, style }: { value: string; onChange: (v: string) => void; style?: React.CSSProperties }) {
   const ref = useRef<HTMLSpanElement>(null);
   const vRef = useRef(value);
-  // Set textContent only on mount — prevents cursor-jumping during typing
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (ref.current) { ref.current.textContent = value; vRef.current = value; } }, []);
+  const flush = (el: HTMLElement) => {
+    const t = el.textContent ?? "";
+    if (t !== vRef.current) { vRef.current = t; onChange(t); }
+  };
   return (
     <span ref={ref} contentEditable suppressContentEditableWarning
-      onFocus={() => { vRef.current = ref.current?.textContent ?? ""; }}
-      onBlur={(e) => { const t = e.currentTarget.textContent ?? ""; if (t !== vRef.current) { vRef.current = t; onChange(t); } }}
+      onInput={(e) => flush(e.currentTarget)}
+      onBlur={(e) => flush(e.currentTarget)}
       onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
       style={{ outline: "none", cursor: "text", borderBottom: "1px dashed rgba(0,240,255,0.35)", minWidth: 4, ...style }} />
   );
@@ -87,12 +89,15 @@ function ET({ value, onChange, style }: { value: string; onChange: (v: string) =
 function ETBlock({ value, onChange, style }: { value: string; onChange: (v: string) => void; style?: React.CSSProperties }) {
   const ref = useRef<HTMLDivElement>(null);
   const vRef = useRef(value);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (ref.current) { ref.current.textContent = value; vRef.current = value; } }, []);
+  const flush = (el: HTMLElement) => {
+    const t = el.textContent ?? "";
+    if (t !== vRef.current) { vRef.current = t; onChange(t); }
+  };
   return (
     <div ref={ref} contentEditable suppressContentEditableWarning
-      onFocus={() => { vRef.current = ref.current?.textContent ?? ""; }}
-      onBlur={(e) => { const t = e.currentTarget.textContent ?? ""; if (t !== vRef.current) { vRef.current = t; onChange(t); } }}
+      onInput={(e) => flush(e.currentTarget)}
+      onBlur={(e) => flush(e.currentTarget)}
       style={{ outline: "none", cursor: "text", borderBottom: "1px dashed rgba(0,240,255,0.2)", minHeight: "1.1em", minWidth: 4, ...style }} />
   );
 }
@@ -1400,17 +1405,23 @@ function Sidebar({ meta, onMeta }: { meta: BlocksMeta; onMeta: (m: Partial<Block
 export default function Editor() {
   const t = useTheme();
   const [content, setContent] = useState<PageContent>(DEFAULT_CONTENT);
+  // contentRef always holds the latest content — used by handleSave to avoid stale closure
+  const contentRef = useRef<PageContent>(DEFAULT_CONTENT);
   const [dirty, setDirty] = useState(false);
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [mediaFor, setMediaFor] = useState<string | null>(null);
   const [resetKey, setResetKey] = useState(0);
 
   useEffect(() => {
-    loadContent().then((c) => { setContent(c); setDirty(false); });
+    loadContent().then((c) => { setContent(c); contentRef.current = c; setDirty(false); });
   }, []);
 
   const uc = useCallback((patch: Partial<PageContent>) => {
-    setContent((c) => ({ ...c, ...patch }));
+    setContent((c) => {
+      const next = { ...c, ...patch };
+      contentRef.current = next;  // keep ref in sync
+      return next;
+    });
     setDirty(true);
   }, []);
 
@@ -1455,9 +1466,14 @@ export default function Editor() {
 
   const handleSave = async () => {
     setStatus("saving");
+    // Blur active element to trigger any pending onInput/onBlur handlers
     (document.activeElement as HTMLElement)?.blur();
+    // Wait 1 frame so React flushes the state update from blur before we read contentRef
+    await new Promise((r) => setTimeout(r, 30));
     try {
-      await saveContent(content);
+      // Use contentRef (always fresh) instead of stale closure `content`
+      await saveContent(contentRef.current);
+      setContent(contentRef.current);
       setDirty(false);
       setStatus("saved");
       setTimeout(() => setStatus("idle"), 2800);

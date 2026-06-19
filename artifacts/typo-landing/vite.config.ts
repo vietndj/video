@@ -33,6 +33,17 @@ export default defineConfig({
               }
               const data = JSON.parse(body);
               const isContent = url.pathname === "/api/save-content";
+              
+              // Safety check: reject suspiciously small payloads for content
+              const keyCount = Object.keys(data).length;
+              console.log(`[API] ${url.pathname} — ${keyCount} keys, ${body.length} bytes`);
+              if (isContent && keyCount < 10) {
+                console.warn(`[API] REJECTED: content has only ${keyCount} keys — likely corrupt, not saving`);
+                res.writeHead(400, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: true, message: `Payload too small (${keyCount} keys) — save rejected to prevent data loss` }));
+                return;
+              }
+              
               const targetFile = path.resolve(
                 import.meta.dirname,
                 "public",
@@ -43,7 +54,7 @@ export default defineConfig({
               await fs.writeFile(targetFile, JSON.stringify(data, null, 2), "utf-8");
               
               res.writeHead(200, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ success: true, message: `Saved to ${isContent ? "content.json" : "theme.json"}` }));
+              res.end(JSON.stringify({ success: true, message: `Saved to ${isContent ? "content.json" : "theme.json"} (${keyCount} keys)` }));
               return;
             } catch (err) {
               res.writeHead(500, { "Content-Type": "application/json" });

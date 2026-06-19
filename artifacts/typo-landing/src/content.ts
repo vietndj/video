@@ -393,11 +393,14 @@ export const DEFAULT_CONTENT: PageContent = {
 
 export async function loadContent(): Promise<PageContent> {
   try {
-    // 1. Try to fetch from server first (either static file or proxy API)
+    // Always try server file first — it's the source of truth
     const res = await fetch("/content.json?_=" + Date.now());
     if (res.ok) {
       const data = (await res.json()) as Partial<PageContent>;
-      return { ...DEFAULT_CONTENT, ...data };
+      // Only use if it has meaningful data (not empty/corrupt)
+      if (Object.keys(data).length > 10) {
+        return { ...DEFAULT_CONTENT, ...data };
+      }
     }
   } catch (err) {
     console.warn("Could not fetch server content.json, trying local storage", err);
@@ -405,26 +408,50 @@ export async function loadContent(): Promise<PageContent> {
 
   try {
     const local = localStorage.getItem("typo_content");
-    if (local) return { ...DEFAULT_CONTENT, ...JSON.parse(local) };
-  } catch {}
+    if (local) {
+      const parsed = JSON.parse(local) as Partial<PageContent>;
+      // Skip corrupted localStorage data
+      if (Object.keys(parsed).length > 10) {
+        return { ...DEFAULT_CONTENT, ...parsed };
+      } else {
+        console.warn("localStorage data is corrupt (too few keys), ignoring");
+        localStorage.removeItem("typo_content");
+      }
+    }
+  } catch {
+    localStorage.removeItem("typo_content");
+  }
 
   return { ...DEFAULT_CONTENT };
 }
 
 export async function saveContent(content: PageContent): Promise<void> {
+  // Safety: never save corrupt/empty content
+  const keyCount = Object.keys(content).length;
+  if (keyCount < 10) {
+    console.error(`saveContent ABORTED: only ${keyCount} keys — data is likely corrupt`);
+    return;
+  }
+
   localStorage.setItem("typo_content", JSON.stringify(content));
-  
+
   try {
     const res = await fetch("/api/save-content", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(content),
     });
-    if (!res.ok) console.warn("Backend save failed");
+    if (res.ok) {
+      const result = await res.json() as { success?: boolean; message?: string };
+      console.log("[saveContent]", result.message);
+    } else {
+      console.warn("Backend save failed", res.status);
+    }
   } catch (err) {
     console.warn("Backend is unreachable", err);
   }
 }
+
 
 // ─── React context ────────────────────────────────────────────
 const ContentCtx = React.createContext<PageContent>(DEFAULT_CONTENT);

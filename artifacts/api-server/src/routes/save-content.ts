@@ -6,6 +6,9 @@ const router = Router();
 
 const PUBLIC_DIR = path.resolve(process.cwd(), "../typo-landing/public");
 
+// Ensure directory exists
+fs.mkdir(PUBLIC_DIR, { recursive: true }).catch(console.error);
+
 router.post("/save-content", async (req, res) => {
   try {
     const content = req.body;

@@ -393,6 +393,9 @@ export const DEFAULT_CONTENT: PageContent = {
 
 export async function loadContent(): Promise<PageContent> {
   try {
+    const local = localStorage.getItem("typo_content");
+    if (local) return { ...DEFAULT_CONTENT, ...JSON.parse(local) };
+
     const res = await fetch("/api/content?_=" + Date.now());
     if (!res.ok) return { ...DEFAULT_CONTENT };
     const data = (await res.json()) as Partial<PageContent>;
@@ -403,12 +406,18 @@ export async function loadContent(): Promise<PageContent> {
 }
 
 export async function saveContent(content: PageContent): Promise<void> {
-  const res = await fetch("/api/save-content", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(content),
-  });
-  if (!res.ok) throw new Error("Failed to save content");
+  localStorage.setItem("typo_content", JSON.stringify(content));
+  
+  try {
+    const res = await fetch("/api/save-content", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(content),
+    });
+    if (!res.ok) console.warn("Backend save failed");
+  } catch (err) {
+    console.warn("Backend is unreachable", err);
+  }
 }
 
 // ─── React context ────────────────────────────────────────────

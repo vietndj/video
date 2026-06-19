@@ -585,6 +585,9 @@ export function deriveTextColors(base: Theme): Theme {
 
 export async function loadTheme(): Promise<Theme> {
   try {
+    const local = localStorage.getItem("typo_theme");
+    if (local) return deriveTextColors(JSON.parse(local));
+    
     const res = await fetch("/api/theme?_=" + Date.now());
     if (!res.ok) return deriveTextColors(PRESETS[0]);
     const data = (await res.json()) as Partial<Theme>;
@@ -596,12 +599,19 @@ export async function loadTheme(): Promise<Theme> {
 }
 
 export async function saveTheme(theme: Theme): Promise<void> {
-  const res = await fetch("/api/save-theme", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(theme),
-  });
-  if (!res.ok) throw new Error("Failed to save theme");
+  // Save to local storage for instant preview
+  localStorage.setItem("typo_theme", JSON.stringify(theme));
+  
+  try {
+    const res = await fetch("/api/save-theme", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(theme),
+    });
+    if (!res.ok) console.warn("Backend save failed");
+  } catch (err) {
+    console.warn("Backend is unreachable", err);
+  }
 }
 
 // ─── Type scale helper ────────────────────────────────────────

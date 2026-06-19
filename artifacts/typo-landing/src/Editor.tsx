@@ -1468,7 +1468,11 @@ export default function Editor() {
   }, []);
 
   const onMeta = useCallback((patch: Partial<BlocksMeta>) => {
-    setContent((c) => ({ ...c, blocksMeta: { ...(c.blocksMeta ?? DEFAULT_META), ...patch } }));
+    setContent((c) => {
+      const next = { ...c, blocksMeta: { ...(c.blocksMeta ?? DEFAULT_META), ...patch } };
+      contentRef.current = next; // keep ref in sync
+      return next;
+    });
     setDirty(true);
   }, []);
 
@@ -1514,11 +1518,20 @@ export default function Editor() {
   };
 
   const renderBlock = (id: string): React.ReactNode => {
-    // Skip blocks that are hidden (not visible on landing page)
-    if (meta.hidden.includes(id)) return null;
+    // Completely hide deprecated orphaned blocks
+    if ((id === "cycle" || id === "discovery") && meta.hidden.includes(id)) return null;
 
     const def = BLOCK_DEFS.find((b) => b.id === id);
     const label = def?.label ?? (id.startsWith("custom-") ? "Custom Block" : id);
+
+    if (meta.hidden.includes(id)) {
+      return (
+        <div key={id} style={{ maxWidth: 820, margin: "16px auto", padding: "12px 20px", background: "rgba(255,255,255,0.03)", border: "1px dashed rgba(255,255,255,0.15)", borderRadius: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ color: "#777", fontSize: 12, fontFamily: MONO }}>[ĐÃ ẨN] KHỐI {label.toUpperCase()}</span>
+          <button onClick={() => onMeta({ hidden: meta.hidden.filter(h => h !== id) })} style={{ background: t.accent, color: t.accentText, border: "none", borderRadius: 4, padding: "4px 12px", fontSize: 12, cursor: "pointer", fontWeight: "bold" }}>Hiện lại</button>
+        </div>
+      );
+    }
 
     const wrap = (children: React.ReactNode) => (
       <BlockShell key={id} id={id} label={label} meta={meta} onMeta={onMeta} onAddMedia={setMediaFor}>

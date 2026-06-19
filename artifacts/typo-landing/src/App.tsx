@@ -509,12 +509,13 @@ export default function App() {
   const [heroReady, setHeroReady] = useState(false);
   useEffect(() => { const timer = setTimeout(() => setHeroReady(true), 80); return () => clearTimeout(timer); }, []);
 
+  const isHidden = (id: string) => c.blocksMeta?.hidden?.includes(id) ?? false;
+
   return (
     <div style={{ background: t.bg, color: t.textBase ?? "#f0f0f0", fontFamily: t.fontBody, minHeight: "100vh", overflowX: "hidden" }}>
 
-
-
       {/* ═══ SECTION 1: HERO ═══ */}
+      {!isHidden("hero") && (
       <section style={{ position: "relative", textAlign: "center", padding: "64px 20px 0", maxWidth: 960, margin: "0 auto" }}>
         <div aria-hidden style={{
           position: "absolute", inset: 0, pointerEvents: "none",
@@ -610,11 +611,13 @@ export default function App() {
           </div>
         </div>
       </section>
-      <MediaSection blockId="hero" />
+      )}
+      {!isHidden("hero") && <MediaSection blockId="hero" />}
 
       <Div />
 
       {/* ═══ SECTION 2: NỖI ĐAU THỰC TẾ ═══ */}
+      {!isHidden("pain") && (
       <Sec maxWidth={760}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 44 }}>
@@ -652,11 +655,13 @@ export default function App() {
           </FadeIn>
         )}
       </Sec>
-      <MediaSection blockId="pain" />
+      )}
+      {!isHidden("pain") && <MediaSection blockId="pain" />}
 
       <Div />
 
       {/* ═══ SECTION 3: GIẢI PHÁP TỪ CHUYÊN GIA ═══ */}
+      {!isHidden("instructor") && (
       <Sec maxWidth={860}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -712,11 +717,13 @@ export default function App() {
           </FadeIn>
         )}
       </Sec>
-      <MediaSection blockId="instructor" />
+      )}
+      {!isHidden("instructor") && <MediaSection blockId="instructor" />}
 
       <Div />
 
       {/* ═══ SECTION 4: SẢN PHẨM CHI TIẾT ═══ */}
+      {!isHidden("products") && (
       <Sec maxWidth={860}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -764,11 +771,13 @@ export default function App() {
           </FadeIn>
         </div>
       </Sec>
-      <MediaSection blockId="products" />
+      )}
+      {!isHidden("products") && <MediaSection blockId="products" />}
 
       <Div />
 
       {/* ═══ SECTION 5: 4 KỸ NĂNG CỐT LÕI ═══ */}
+      {!isHidden("skills") && (
       <Sec maxWidth={940}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -806,11 +815,13 @@ export default function App() {
           </div>
         </FadeIn>
       </Sec>
-      <MediaSection blockId="skills" />
+      )}
+      {!isHidden("skills") && <MediaSection blockId="skills" />}
 
       <Div />
 
       {/* ═══ SECTION 6: LỘ TRÌNH KIẾN THỨC ═══ */}
+      {!isHidden("roadmap") && (
       <Sec maxWidth={900}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 52 }}>
@@ -894,11 +905,13 @@ export default function App() {
           )}
         </FadeIn>
       </Sec>
-      <MediaSection blockId="roadmap" />
+      )}
+      {!isHidden("roadmap") && <MediaSection blockId="roadmap" />}
 
       <Div />
 
       {/* ═══ SECTION 7: QUÀ TẶNG ĐI KÈM ═══ */}
+      {!isHidden("bonuses") && (
       <Sec maxWidth={820}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -954,11 +967,13 @@ export default function App() {
           </FadeIn>
         </div>
       </Sec>
-      <MediaSection blockId="bonuses" />
+      )}
+      {!isHidden("bonuses") && <MediaSection blockId="bonuses" />}
 
       <Div />
 
       {/* ═══ SECTION 8: TRƯỚC & SAU ═══ */}
+      {!isHidden("before-after") && (
       <Sec maxWidth={900}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -994,11 +1009,13 @@ export default function App() {
           </div>
         </FadeIn>
       </Sec>
-      <MediaSection blockId="before-after" />
+      )}
+      {!isHidden("before-after") && <MediaSection blockId="before-after" />}
 
       <Div />
 
       {/* ═══ SECTION 9: CHỐT SALE & THANH TOÁN ═══ */}
+      {!isHidden("cta") && (
       <section id="dang-ky" style={{ maxWidth: 760, margin: "84px auto 0", padding: "0 20px" }}>
         <FadeIn>
           <div style={{ background: `linear-gradient(135deg, ${t.card}, ${t.card2})`, border: `1px solid ${t.accent}44`, borderRadius: 28, overflow: "hidden" }}>
@@ -1047,9 +1064,11 @@ export default function App() {
           </div>
         </FadeIn>
       </section>
-      <MediaSection blockId="cta" />
+      )}
+      {!isHidden("cta") && <MediaSection blockId="cta" />}
 
       {/* ═══ FOOTER ═══ */}
+      {!isHidden("footer") && (
       <footer style={{ textAlign: "center", padding: "64px 20px 32px", borderTop: `1px solid ${t.line}`, marginTop: 84 }}>
         <div style={{ fontFamily: t.fontDisplay, fontSize: 28, fontWeight: 900, marginBottom: 8 }}>
           {c.footerBrand}<span style={{ color: t.accent }}>{c.footerDot}</span>DESIGN
@@ -1065,6 +1084,7 @@ export default function App() {
         </div>
         <p style={{ fontSize: 12, color: t.textMuted ?? "#444", marginTop: 16, fontFamily: MONO }}>{c.footerCopyright}</p>
       </footer>
+      )}
     </div>
   );
 }

@@ -191,9 +191,9 @@ router.post("/sepay/webhook", async (req, res) => {
     
     // Only process if it's an incoming payment of the exact amount
     if (amountIn === COURSE_AMOUNT) {
-      // Try to extract phone number from transfer content (e.g., "TYPO 0912345678")
-      // This regex looks for 10-11 digit phone numbers in the content
-      const phoneMatch = content.match(/0[0-9]{9,10}/);
+      // Try to extract phone number from transfer content
+      // Relaxed regex to allow fake numbers during testing (8-15 digits)
+      const phoneMatch = content.match(/[0-9]{8,15}/);
       const extractedPhone = phoneMatch ? phoneMatch[0] : null;
 
       if (extractedPhone && GOOGLE_SCRIPT_URL) {

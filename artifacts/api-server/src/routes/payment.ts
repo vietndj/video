@@ -59,28 +59,22 @@ router.post("/lead/register", async (req, res) => {
       values: [viTimestamp(), name, `'${phone}`, email, url, "chưa thanh toán"]
     };
 
-    const sheetRes = await fetch(GOOGLE_SCRIPT_URL, {
+    // Fire and forget: don't wait for Google Sheets to finish, to make UI instantly responsive!
+    fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+    })
+    .then(async (res) => {
+      if (!res.ok) throw new Error(`Google Script failed with status ${res.status}`);
+      req.log.info({ name, phone }, "Lead registered to sheet via Google Script (async)");
+    })
+    .catch((err) => {
+      req.log.error(err, "Background task: Error saving lead to Google Sheets");
     });
 
-    let sheetData: any = {};
-    const contentType = sheetRes.headers.get("content-type") || "";
-    if (contentType.includes("application/json")) {
-      sheetData = await sheetRes.json();
-    } else {
-      const text = await sheetRes.text();
-      req.log.warn({ text, status: sheetRes.status }, "Google Script returned non-JSON response");
-      if (sheetRes.ok) {
-        sheetData = { success: true, rowIndex: -1 };
-      } else {
-        throw new Error(`Google Script failed with status ${sheetRes.status}`);
-      }
-    }
-
-    req.log.info({ name, phone, sheetData }, "Lead registered to sheet via Google Script");
-    res.json({ success: true, rowIndex: sheetData.rowIndex ?? -1 });
+    // Return instantly to frontend
+    res.json({ success: true, rowIndex: -1 });
   } catch (err: any) {
     logger.error(err, "Error registering lead to sheet");
     res.status(500).json({ error: "Failed to register lead", details: err.message });

@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://typography-f502.onrender.com/api/:path*"
+      "destination": "https://video-landing-api.onrender.com/api/:path*"
     },
     {
       "source": "/((?!api/).*)",

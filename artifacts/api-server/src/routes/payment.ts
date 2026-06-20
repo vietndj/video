@@ -5,7 +5,7 @@ const router: Router = Router();
 
 const SEPAY_API_KEY = process.env.SEPAY_API_KEY ?? "";
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL ?? "";
-const COURSE_AMOUNT = parseInt(process.env.COURSE_AMOUNT ?? "249000", 10);
+const COURSE_AMOUNT = parseInt(process.env.COURSE_AMOUNT ?? "499000", 10);
 
 interface SePayTransaction {
   id: string;
@@ -38,7 +38,7 @@ router.get("/payment/bank-info", (_req, res) => {
     account: process.env.SEPAY_ACCOUNT ?? "88804101986",
     holder: process.env.SEPAY_HOLDER ?? "NGUYEN DUC VIET",
     amount: COURSE_AMOUNT,
-    content: "TYPO [HO TEN]",
+    content: "VIDEO [HO TEN]",
   });
 });
 
@@ -209,7 +209,7 @@ router.post("/payment/confirm", async (req, res) => {
           name: customerName,
           email: customerEmail,
           phone: phone,
-          course: "Typography Masterclass"
+          course: "Video Masterclass"
         })
       }).catch(err => req.log.error(err, "Failed to call Make webhook"));
     }
@@ -281,7 +281,7 @@ router.post("/sepay/webhook", async (req, res) => {
               name: nameToSend,
               email: emailToSend,
               phone: extractedPhone,
-              course: "Typography Masterclass"
+              course: "Video Masterclass"
             })
           }).catch(err => req.log.error(err, "Failed to call Make webhook from SePay webhook"));
         } else {

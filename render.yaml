@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: typo-landing-api
+    name: video-landing-api
     env: node
     buildCommand: pnpm install && pnpm run build
     startCommand: cd artifacts/api-server && pnpm run start
@@ -11,5 +11,16 @@ services:
         value: 10000
       - key: SEPAY_API_KEY
         sync: false
-      - key: GOOGLE_SHEET_ID
+      - key: GOOGLE_SCRIPT_URL
         sync: false
+      - key: COURSE_AMOUNT
+        sync: false
+      - key: SEPAY_BANK
+        sync: false
+      - key: SEPAY_ACCOUNT
+        sync: false
+      - key: SEPAY_HOLDER
+        sync: false
+      - key: MAKE_WEBHOOK_URL
+        sync: false
+

@@ -4,8 +4,6 @@ import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
-import path from "path";
-
 const app: Express = express();
 
 app.use(
@@ -32,12 +30,5 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
-
-// Serve static files in production
-const distPath = path.resolve(__dirname, "../../typo-landing/dist");
-app.use(express.static(distPath));
-app.get("*splat", (req, res) => {
-  res.sendFile(path.resolve(distPath, "index.html"));
-});
 
 export default app;
